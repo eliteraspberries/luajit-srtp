@@ -17,12 +17,23 @@ test -f mbedtls-${VERSION}.zip || \
 test -d mbedtls-${VERSION} || \
     unzip mbedtls-${VERSION}.zip
 (
-    patch -f -p1 -d mbedtls-${VERSION} < ${dir}/patches/patch-mbedtls-3.1.0.txt
+    patch -f -p0 < ${dir}/patches/patch-mbedtls-${VERSION}.txt
 ) || true
-
 cd mbedtls-${VERSION}
+
+BUILD_ENV="SHARED=1"
+case "${TARGET}" in
+    *-*-android*)
+        BUILD_ENV="${BUILD_ENV} SOEXT_CRYPTO=so"
+        BUILD_ENV="${BUILD_ENV} SOEXT_TLS=so"
+        BUILD_ENV="${BUILD_ENV} SOEXT_X509=so"
+        ;;
+    *)
+        ;;
+esac
 make clean
-make lib SHARED=1
+env ${BUILD_ENV} make lib
+
 export DESTDIR="${dir}/build/${TARGET}"
 mkdir -p "${DESTDIR}"
-make install DESTDIR="${DESTDIR}" SHARED=1
+make install DESTDIR="${DESTDIR}"

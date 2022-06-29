@@ -1,6 +1,6 @@
 diff -ur mbedtls-3.1.0.orig/Makefile mbedtls-3.1.0/Makefile
---- mbedtls-3.1.0.orig/Makefile	2022-06-28 21:24:27.000000000 -0400
-+++ mbedtls-3.1.0/Makefile	2022-06-28 21:24:40.000000000 -0400
+--- mbedtls-3.1.0.orig/Makefile	2022-06-29 18:10:51.000000000 -0400
++++ mbedtls-3.1.0/Makefile	2022-06-29 18:11:07.000000000 -0400
 @@ -55,7 +55,7 @@
  	$(PERL) scripts/generate_visualc_files.pl
  
@@ -10,3 +10,55 @@ diff -ur mbedtls-3.1.0.orig/Makefile mbedtls-3.1.0/Makefile
  	mkdir -p $(DESTDIR)/include/mbedtls
  	cp -rp include/mbedtls $(DESTDIR)/include
  	mkdir -p $(DESTDIR)/include/psa
+diff -ur mbedtls-3.1.0.orig/library/Makefile mbedtls-3.1.0/library/Makefile
+--- mbedtls-3.1.0.orig/library/Makefile	2022-06-29 18:10:51.000000000 -0400
++++ mbedtls-3.1.0/library/Makefile	2022-06-29 18:13:17.000000000 -0400
+@@ -47,9 +47,9 @@
+ endif
+ endif
+ 
+-SOEXT_TLS=so.17
+-SOEXT_X509=so.4
+-SOEXT_CRYPTO=so.11
++SOEXT_TLS?=so.17
++SOEXT_X509?=so.4
++SOEXT_CRYPTO?=so.11
+ 
+ # Set AR_DASH= (empty string) to use an ar implementation that does not accept
+ # the - prefix for command line options (e.g. llvm-ar)
+@@ -217,9 +217,11 @@
+ 	echo "  LD    $@"
+ 	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJS_TLS) -L. -lmbedx509 -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS)
+ 
++ifneq ($(SOEXT_TLS),so)
+ libmbedtls.so: libmbedtls.$(SOEXT_TLS)
+ 	echo "  LN    $@ -> $<"
+ 	ln -sf $< $@
++endif
+ 
+ libmbedtls.dylib: $(OBJS_TLS) libmbedx509.dylib
+ 	echo "  LD    $@"
+@@ -244,9 +246,11 @@
+ 	echo "  LD    $@"
+ 	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJS_X509) -L. -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS)
+ 
++ifneq ($(SOEXT_X509),so)
+ libmbedx509.so: libmbedx509.$(SOEXT_X509)
+ 	echo "  LN    $@ -> $<"
+ 	ln -sf $< $@
++endif
+ 
+ libmbedx509.dylib: $(OBJS_X509) libmbedcrypto.dylib
+ 	echo "  LD    $@"
+@@ -271,9 +275,11 @@
+ 	echo "  LD    $@"
+ 	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJS_CRYPTO) $(LOCAL_LDFLAGS) $(LDFLAGS)
+ 
++ifneq ($(SOEXT_CRYPTO),so)
+ libmbedcrypto.so: libmbedcrypto.$(SOEXT_CRYPTO)
+ 	echo "  LN    $@ -> $<"
+ 	ln -sf $< $@
++endif
+ 
+ libmbedcrypto.dylib: $(OBJS_CRYPTO)
+ 	echo "  LD    $@"
