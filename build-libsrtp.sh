@@ -79,6 +79,9 @@ test -f libsrtp-${VERSION}.zip || \
     curl -L -o libsrtp-${VERSION}.zip https://github.com/cisco/libsrtp/archive/refs/tags/v${VERSION}.zip
 test -d libsrtp-${VERSION} || \
     unzip libsrtp-${VERSION}.zip
+(
+    patch -f -p0 < ${dir}/patches/patch-libsrtp-${VERSION}.txt
+) || true
 cd libsrtp-${VERSION}
 
 CMAKE_ARGS="${CMAKE_ARGS} "
