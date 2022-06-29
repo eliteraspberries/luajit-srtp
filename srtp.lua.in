@@ -1,0 +1,17 @@
+-- Copyright (c) 2001-2017 Cisco Systems, Inc.
+-- Copyright 2022, Mansour Moufid <mansourmoufid@gmail.com>
+
+local srtp = {}
+
+local ffi = require('ffi')
+
+ffi.cdef([[
+{{types}}
+{{functions}}
+]])
+
+{{defines}}
+
+srtp.libsrtp = ffi.load('srtp2')
+
+return srtp
