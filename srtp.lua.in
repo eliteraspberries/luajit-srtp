@@ -5,13 +5,13 @@ local srtp = {}
 
 local ffi = require('ffi')
 
+local libsrtp = ffi.load('srtp2')
+
 ffi.cdef([[
 {{types}}
 {{functions}}
 ]])
 
 {{defines}}
-
-srtp.libsrtp = ffi.load('srtp2')
 
 return srtp
