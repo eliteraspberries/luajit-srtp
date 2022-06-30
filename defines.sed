@@ -1,11 +1,13 @@
-/^#define/!d
-s/#define  *\([A-Za-z0-9_]*\)$/local \1 = 1/g
-s/#define  *\([A-Za-z0-9_]*\)  *\(.*\)/local \1 = \2\
+/^#define/ {
+    s/#define  *\([A-Za-z0-9_]*\)$/local \1 = 1/g
+    s/#define  *\([A-Za-z0-9_]*\)  *\(.*\)/local \1 = \2\
 srtp.\1 = \1/g
-/#define  *[A-Za-z0-9_]*(.*)/ {
-    s/\([A-Za-z0-9_]*\)->\([A-Za-z0-9_]*\)/\1[0].\2/g
-}
-s/#define  *\([A-Za-z0-9_]*\)(\([^)]*\))  *\(.*\)*/local function \1(\2)\
+    /#define  *[A-Za-z0-9_]*(.*)/ {
+        s/\([A-Za-z0-9_]*\)->\([A-Za-z0-9_]*\)/\1[0].\2/g
+    }
+    s/#define  *\([A-Za-z0-9_]*\)(\([^)]*\))  *\(.*\)*/local function \1(\2)\
     return \3\
 end\
-srtp.\1 = \1/
+srtp.\1 = \1/g
+    p
+}

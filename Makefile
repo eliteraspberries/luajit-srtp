@@ -56,7 +56,7 @@ includes: pre.sed
 
 %.txt: %.sed
 	$(MAKE) includes
-	for h in $(INCLUDES); do sed -f $< < $$h >> $@; done
+	for h in $(INCLUDES); do sed -n -f $< < $$h >> $@; done
 
 srtp.lua: srtp.lua.in types.txt functions.txt defines.txt
 	sed -e '/{{types}}/{r types.txt' -e 'd' -e '}' \
